@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<h lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Quixlab - Bootstrap Admin Dashboard Template by Themefisher.com</title>
+        <!-- Favicon icon -->
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+        <!-- Add Bootstrap CSS CDN -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- Custom Stylesheet -->
+    
+    
+    <link href="/static/admin/css/style.css" rel="stylesheet">
+    <style>
+         .modal-dialog {
+        max-height: 90vh; /* Adjust the percentage to your preference */
+        overflow-y: scroll;
+    }
+    </style>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+   
+  
+</head>
+<body>
+
+   
+    
+
+    <!-- Include your admin header template -->
+    {{template "adminheader.html" .}}
+
+    <div class="content-body">
+        <div class="row page-titles mx-0">
+            <div class="col p-md-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="topsection d-flex justify-content-between mb-2">
+                                <h4 class="card-title">Data Table</h4>
+                                <div class="bootstrap-modal">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#addCategoryModal">Add New Product</button>
+                                    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog"
+                                        aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="addCategoryModalLabel">Add New Category
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form enctype="multipart/form-data">
+                                                        <div class="form-group">
+                                                            <label for="productName" class="col-form-label">Product
+                                                                Name:</label>
+                                                            <input type="text" class="form-control rounded" id="productName"
+                                                                name="productName" required>
+                                                            <p id="productNameError" class="text-danger rounded animate__animated animate__fadeIn" style="display: none;"></p>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="productDetails" class="col-form-label">Product
+                                                                Details:</label>
+                                                            <input type="text" class="form-control rounded" id="productDetails"
+                                                                name="productDetails" required>
+                                                            <p id="productDetailsError" class="text-danger rounded animate__animated animate__fadeIn" style="display: none;"></p>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="status" class="col-form-label">Category</label>
+                                                            <select class="form-control rounded" id="categoryID"
+                                                                name="categoryID" required>
+                                                                {{range .Category}}
+                                                                <option value="{{.ID}}" name="categoryID">{{.CategoryName}}</option>
+                                                                {{end}}
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="status" class="col-form-label">Category</label>
+                                                            <select class="form-control rounded" id="brandID"
+                                                                name="brandID" required>
+                                                                {{range .Brands}}
+                                                                <option value="1" name="categoryID">{{.BrandName}}</option>
+                                                                {{end}}
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="processor" class="col-form-label">Processor:</label>
+                                                            <select class="form-control rounded" id="processor" name="processor" required>
+                                                                <option value="intel">Intel</option>
+                                                                <option value="amd">AMD</option>
+                                                            </select>
+                                                        </div>
+                                    
+                                                        <div class="form-group">
+                                                            <label for="maxprice" class="col-form-label">Max Price:</label>
+                                                            <input type="number" class="form-control rounded" id="maxprice" name="maxprice" required>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="status" class="col-form-label">Status</label>
+                                                            <select class="form-control rounded" id="status" name="status"
+                                                                required>
+                                                                <option value="listed">Listnow</option>
+                                                                <option value="unlisted">unlisted</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="status" class="col-form-label">Ram</label>
+                                                            <select class="form-control rounded" id="ram" name="ram" required>
+                                                                <option value="4GB">4GB</option>
+                                                                <option value="8GB">8GB</option>
+                                                                <option value="16">16GB</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="status" class="col-form-label">Storage</label>
+                                                            <select class="form-control rounded" id="storage" name="storage"
+                                                                required>
+                                                                <option value="256GB">256GB</option>
+                                                                <option value="512GB">512GB</option>
+                                                                <option value="1TB">1TB</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="stock" class="col-form-label">Stock</label>
+                                                            <input type="number" class="form-control rounded" id="stock"
+                                                                name="stock" required>
+                                                            <p id="stockError" class="text-danger rounded animate__animated animate__fadeIn" style="display: none;"></p>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="price" class="col-form-label">Price</label>
+                                                            <input type="number" class="form-control rounded" id="price"
+                                                                name="price" required>
+                                                            <p id="priceError" class="text-danger rounded animate__animated animate__fadeIn" style="display: none;"></p>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="images" class="col-form-label">Images:</label>
+                                                            <input type="file" class="form-control rounded" id="images" accept=".img, .jpg, .jpeg, .png, .webp" name="images[]" multiple required>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary"
+                                                                onClick="addProduct()">Add New Product</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center mb-2">
+                                <label for="entriesPerPage" class="form-label me-2">Show</label>
+                                <select class="form-select" id="entriesPerPage" onchange="updateEntries()" style="width: auto;">
+                                    <option value="{{.Entries}}">{{.Entries}}</option>
+                                  
+                                    {{ if ne .Entries 5 }}<option value="5">5</option>{{ end }}
+                                    {{ if ne .Entries 10 }}<option value="10">10</option>{{ end }}
+                                    {{ if ne .Entries 20 }}<option value="20">20</option>{{ end }}
+                                    
+                                </select>
+                                
+                                <label class="form-label ms-2">Entries:</label>
+                            </div>
+                            
+                            
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered zero-configuration">
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Product Details</th>
+                                            <th>Category</th>
+                                            <th>Status</th>
+                                            <th>Variants</th>
+                                            <th>Ram</th>
+                                            <th>Storage</th>
+                                            <th>Stock</th>
+                                            <th>Price</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{range .Products}}
+                                        <tr data-id="{{.ID}}">
+                                            <td>{{.ProductName}}</td>
+                                            <td>{{.ProductDetails}}</td>
+                                            <td>{{.Category.CategoryName}}</td>
+                                            <td>
+                                                {{if eq .Status "listed"}}
+                                                <span class="label label-success">{{.Status}}</span>
+                                                {{else}}
+                                                <span class="label label-danger">{{.Status}}</span>
+                                                {{end}}
+                                            </td>
+                                            <td>
+                                                <select class="variant-dropdown" onchange="updateVariantDetails(this)">
+                                                    {{range .Variants}}
+                                                    <option value="{{.Slug}}" data-ram="{{.Ram}}" data-storage="{{.Storage}}" data-stock="{{.Stock}}" data-price="{{.Price}}">
+                                                        {{.Slug}}
+                                                    </option>
+                                                    {{end}}
+                                                </select>
+                                            </td>
+                                            <td class="ram" data-id="{{.ID}}"></td>
+                                            <td class="storage" data-id="{{.ID}}"></td>
+                                            <td class="stock" data-id="{{.ID}}"></td>
+                                            <td class="price" data-id="{{.ID}}"></td>
+                                            
+                                                <td>
+                                                    <div class="d-flex">
+                                                    {{if eq .Status "listed"}}
+                                                    <!-- <a href="/admin/categories/update-status?id={{.ID}}"> -->
+                                                    <!-- <button type="button" class="btn mb-1 btn-outline-warning btn-xs">
+                                                            <span class="btn-icon"><i class="fa fa-close"></i></span>block -->
+                                                    <!-- <span><a href="/admin/categories/update-status?id={{.ID}}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil color-muted m-r-5"></i> </a></span> -->
+                                                    <!-- <a href="#" data-toggle="tooltip" data-placement="top" title="Close"><i class="fa fa-close color-danger"></i></a>
+                                                            
+                                                        </button> -->
+                                                        <button type="button" class="btn mb-1 btn-outline-warning btn-xs block-btn" data-id="{{.ID}}" data-toggle="tooltip" data-placement="top"
+                                                        title="Unlist">
+                                                            <span><i class="fa fa-close color-muted m-r-5"></i></span>
+    
+                                                        </button>
+                                                    <!-- </a> -->
+                                                    {{else}}
+                                                    <!-- <span><a href="/admin/categories/update-status?id={{.ID}}" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash color-muted m-r-5"></i> </a></span> -->
+    
+                                                    <button type="button" class="btn mb-1 btn-outline-success btn-xs block-btn" data-id="{{.ID}}" data-toggle="tooltip" data-placement="top"
+                                                    title="list">
+                                                        <span><i class="fa fa-check color-muted m-r-5"></i></span>
+    
+                                                    </button>
+                                                    {{end}}
+    
+                                                    <button type="button"
+                                                        class="btn mb-1 btn-outline-danger btn-xs delete-btn mx-1"
+                                                        data-id="{{.ID}}" data-toggle="tooltip" data-placement="top"
+                                                        title="Delete">
+                                                        <span class="btn-icon"><i class="fa fa-trash"></i></span>
+                                                    </button>
+                                                    <a href="/admin/product?id={{.ID}}" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                    <button type="button"class="btn mb-1 btn-outline-dark btn-xs edit-btn mx-1" >
+                                                        <span class="btn-icon"><i class="fa fa-pencil"></i></span>
+                                                    </button>
+                                                </a>
+                                                </div>
+    
+    
+    
+                                                </td>
+                                                <!-- Your action buttons here -->
+                                            </td>
+                                        </tr>
+                                        {{end}}
+                                    </tbody>
+                                  
+                                </table>
+                                <div class="pagination-container mt-4">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                        </li>
+                                        {{range .Pagenumber}}
+                                        {{if eq . $.Currentpage}}
+                                        <li class="page-item active" aria-current="page" value="{{.}}">
+                                            <span class="page-link" id="pagenumber">{{.}} <span class="sr-only">(current)</span></span>
+                                        </li>
+                                        {{else}}
+                                        <li class="page-item " aria-current="page">
+                                            <span class="page-link" id="pagenumber" onclick="updatepage('{{.}}')">{{.}} <span class="sr-only">(current)</span></span>
+                                        </li>
+                                        
+                                        {{end}}
+                                        
+                                        {{end}}
+                                    
+            
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">Next</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <!-- Include your footer -->
+    <div class="footer">
+        <div class="copyright">
+            <p>Copyright &copy; Designed & Developed by <a href="https://themeforest.net/user/quixlab">Quixlab</a> 2018
+            </p>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Your existing scripts -->
+
+
+   
+
+
+         <script>
+            function updateEntries() {
+                var limit = parseInt(document.getElementById("entriesPerPage").value);
+                var offset = parseInt(document.getElementById("pagenumber").innerHTML);
+               window.location.href=`/admin/products?offset=${offset}&limit=${limit}`
+           }
+           function updatepage(pageNumber) {
+            var limit = parseInt(document.getElementById("entriesPerPage").value);
+            var offset = parseInt(pageNumber);
+            window.location.href=`/admin/products?offset=${offset}&limit=${limit}`
+}
+
+    
+
+
+
+        async function updateVariantDetails(select) {
+            console.log('Function called');
+            var selectedOption = select.options[select.selectedIndex];
+            console.log('Selected Option:', selectedOption);
+            var ram = selectedOption.getAttribute('data-ram');
+            var storage = selectedOption.getAttribute('data-storage');
+            var stock = selectedOption.getAttribute('data-stock');
+            var price = selectedOption.getAttribute('data-price');
+            var productID = select.closest('tr').getAttribute('data-id');
+
+
+            // Update the corresponding TD elements
+            $(`.ram[data-id=${productID}]`).text(ram);
+            $(`.storage[data-id=${productID}]`).text(storage);
+            $(`.stock[data-id=${productID}]`).text(stock);
+            $(`.price[data-id=${productID}]`).text(price);
+            console.log("checjkjkd",productID)
+        }
+        
+        $(document).ready(function () {
+            $('.variant-dropdown').each(function () {
+                updateVariantDetails(this);
+            });
+
+            
+            // Attach a click event handler to the button with the delete-btn class
+            $('.delete-btn').on('click', function () {
+                var productID = $(this).data('id');
+
+                console.log('Sending AJAX request with ID:', productID);
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Perform the AJAX request for deletion
+                        $.ajax({
+                            url: '/admin/products',
+                            type: 'DELETE',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ id: productID }),
+                            success: function (response) {
+                                console.log('Success:', response);
+
+                                // Show success toast
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: 'The product has been deleted.',
+                                    timer: 2000,
+                                    timerProgressBar: true,
+                                    showConfirmButton: false
+                                });
+
+                                // Optionally, you can redirect the user or update the UI
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 2000);
+                            },
+                            error: function (error) {
+                                console.error('Error:', error);
+                            }
+                        });
+                    }
+                });
+            });
+            $('.block-btn').on('click', function () {
+                var customerId = $(this).data('id');
+
+                console.log('Sending AJAX request with ID:', customerId);
+
+                $.ajax({
+                    url: '/admin/products',
+                    type: 'PATCH',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: customerId }),
+                    success: function (response) {
+                                console.log('Success:', response);
+
+                                // Show success toast
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Status Updated!',
+                                    text: 'The Status has been updated succesfully.',
+                                    timer: 2000,
+                                    timerProgressBar: true,
+                                    showConfirmButton: false
+                                });
+
+                                // Optionally, you can redirect the user or update the UI
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 2000);
+                            },
+                            error: function (error) {
+                                console.error('Error:', error);
+                            }
+                   
+                });
+            });
+        });
+
+        async function addProduct() {
+       
+       var productName = document.getElementById('productName').value;
+       var productDetails = document.getElementById('productDetails').value;
+       var status = document.getElementById('status').value;
+       var ram = document.getElementById('ram').value;
+       var storage = document.getElementById('storage').value;
+       var categoryID = document.getElementById('categoryID').value;
+       var stock = document.getElementById('stock').value;
+       var price = document.getElementById('price').value;
+       var images = document.getElementById('images').files;
+       var processor = document.getElementById('processor').value; 
+       var maxprice = document.getElementById('maxprice').value; 
+       var brandID = document.getElementById('brandID').value; 
+       
+       
+
+      
+       var formData = new FormData();
+
+       // Append text fields to FormData
+       formData.append('productName', productName);
+       formData.append('productDetails', productDetails);
+       formData.append('status', status);
+       formData.append('ram', ram);
+       formData.append('storage', storage);
+       formData.append('categoryID', parseInt(categoryID));
+       formData.append('stock', parseInt(stock));
+       formData.append('price', parseFloat(price));
+       formData.append('processor', processor);
+       formData.append('maxprice', parseFloat(maxprice));
+       formData.append('brandID', parseInt(brandID));
+       
+
+     
+       for (var i = 0; i < images.length; i++) {
+           formData.append('images', images[i]);
+       }
+
+       try {
+           var response = await fetch('/admin/product', {
+               method: 'POST',
+               body: formData,
+           });
+
+           // Parse the JSON response
+           var responseData = await response.json();
+
+           if (response.ok) {
+               if (responseData.redirect) {
+                   window.location.href = responseData.redirect;
+               } else {
+                   console.log(responseData);
+               }
+           } else {
+               // Handle HTTP error responses
+               console.error('Error:', response.status, responseData.error);
+
+               // Display error messages based on specific errors
+               const productNameError = document.getElementById('productNameError');
+               const productDetailsError = document.getElementById('productDetailsError');
+               const stockError = document.getElementById('stockError');
+               const priceError = document.getElementById('priceError');
+
+               productNameError.textContent = responseData.Errors.ProductNameError || '';
+               productDetailsError.textContent = responseData.Errors.ProductDetailsError || '';
+               stockError.textContent = responseData.Errors.StockError || '';
+               priceError.textContent = responseData.Errors.PriceError || '';
+
+               // Show the error containers for the corresponding errors
+               productNameError.style.display = productNameError.textContent ? 'block' : 'none';
+               productDetailsError.style.display = productDetailsError.textContent ? 'block' : 'none';
+               stockError.style.display = stockError.textContent ? 'block' : 'none';
+               priceError.style.display = priceError.textContent ? 'block' : 'none';S
+           }
+       } catch (error) {
+           // Handle other errors, e.g., network issues
+           console.error('Error:', error);
+       }}
+       
+    </script>
+
+<script src="/static/admin/plugins/common/common.min.js"></script>
+<script src="/static/admin/js/custom.min.js"></script>
+<script src="/static/admin/js/settings.js"></script>
+<script src="/static/admin/js/gleek.js"></script>
+<script src="/static/admin/js/styleSwitcher.js"></script>
+
+
+</body>
+
+</html>
