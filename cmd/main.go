@@ -27,6 +27,8 @@ func main() {
 	// Define API routes
 	router.GET("/register", userHandler.Signup)
 	router.POST("/register", userHandler.RegisterUser)
+	router.GET("/verify", userHandler.VerifyHandler)
+	router.POST("/verify", userHandler.VerifyPostHandler)
 	api := router.Group("/api")
 	{
 		userAPI := api.Group("/user")

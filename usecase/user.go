@@ -5,12 +5,15 @@ import (
 	"cleancode/entity"
 	repository "cleancode/respository/interfaces"
 	interfaceUseCase "cleancode/usecase/interfaces"
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
 	"net/smtp"
 	"regexp"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUseCase struct {
@@ -23,6 +26,7 @@ func NewUserUseCase(userRepository repository.UserRepository) interfaceUseCase.U
 }
 
 func (uc *UserUseCase) RegisterUser(user *entity.User) error {
+	fmt.Println("usecase")
 	if user.Username == "" {
 		return fmt.Errorf("name should not be empty")
 	}
@@ -94,9 +98,9 @@ func (uc *UserUseCase) RegisterUser(user *entity.User) error {
 	}
 
 	// Call repository method to save the user
-	if err := uc.UserRepository.SaveUser(user); err != nil {
-		return fmt.Errorf("error saving user: %v", err)
-	}
+	// if err := uc.UserRepository.SaveUser(user); err != nil {
+	// 	return fmt.Errorf("error saving user: %v", err)
+	// }
 
 	return nil
 }
@@ -128,4 +132,34 @@ func (uc *UserUseCase) SendOTP(otp, email, femail, epassword string) error {
 	}
 
 	return nil
+}
+func (uc *UserUseCase) VerifyOTP(otp string, email string) error {
+	userEmail := email
+	enteredOTP := otp
+
+	storedOTP, ok := otpMap[userEmail]
+	if !ok {
+		return errors.New("OTP not found for the given Email")
+	}
+
+	if enteredOTP == storedOTP {
+		// Clear the OTP from the map after successful verification
+		delete(otpMap, userEmail)
+		// Render HTML page with a success message
+		// c.HTML(http.StatusOK, "verify.html", gin.H{"message": "OTP verified successfully"})
+		// // Send JSON response with the same success message
+		// c.JSON(http.StatusOK, gin.H{"message": "OTP verified successfully"})
+		return nil
+	} else {
+		return errors.New("invalid otp")
+	}
+}
+func (uc *UserUseCase) HashPassword(password string) (string, error) {
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		return "", err
+	}
+	return string(hash), nil
+
 }
