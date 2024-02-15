@@ -27,6 +27,18 @@ func (r *UserRepositoryImpl) GetUserByUsername(username string) (*entity.User, e
 	}
 	return &user, nil
 }
+
+func (r *UserRepositoryImpl) FetchUser(Newmail string) (entity.Compare, error) {
+	var compare entity.Compare
+	fmt.Println(Newmail)
+	if err := r.DB.Raw("SELECT ID, password, username,email, role, status FROM user WHERE email=$1", Newmail).Scan(&compare).Error; err != nil {
+		fmt.Println("Error querying the database:", err)
+		return compare, err
+	}
+	fmt.Println("compare", compare)
+	return compare, nil
+}
+
 func (r *UserRepositoryImpl) CheckExistingUsername(username string) (bool, error) {
 	var count int64
 	if err := r.DB.Table("users").Where("username = ?", username).Count(&count).Error; err != nil {

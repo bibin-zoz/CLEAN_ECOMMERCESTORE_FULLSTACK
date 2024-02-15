@@ -7,8 +7,6 @@ import (
 
 type UserUseCase interface {
 	RegisterUser(user *entity.User) error
-	GenerateOTP() (string, error)
-	SendOTP(otp, email, femail, epassword string) error
-	VerifyOTP(otp string, email string) error
-	HashPassword(password string) (string, error)
+
+	LoginUser(email, password string) (entity.Compare, entity.Invalid, error)
 }

@@ -8,4 +8,5 @@ type UserRepository interface {
 	CheckExistingEmail(email string) (bool, error)
 	CheckExistingNumber(number string) (bool, error)
 	SaveUser(user *entity.User) error
+	FetchUser(Newmail string) (entity.Compare, error)
 }

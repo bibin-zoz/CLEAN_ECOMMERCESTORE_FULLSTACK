@@ -3,17 +3,11 @@ package usecase
 
 import (
 	"cleancode/entity"
+	"cleancode/helpers"
 	repository "cleancode/respository/interfaces"
 	interfaceUseCase "cleancode/usecase/interfaces"
-	"errors"
 	"fmt"
-	"log"
-	"math/rand"
-	"net/smtp"
 	"regexp"
-	"time"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUseCase struct {
@@ -23,6 +17,45 @@ type UserUseCase struct {
 func NewUserUseCase(userRepository repository.UserRepository) interfaceUseCase.UserUseCase {
 	return &UserUseCase{UserRepository: userRepository}
 
+}
+
+func (uc *UserUseCase) LoginUser(email, password string) (entity.Compare, entity.Invalid, error) {
+	var data entity.Invalid
+	var compare entity.Compare
+	if email == "" {
+		data.EmailError = "Email should not be empty"
+		return compare, data, fmt.Errorf("Email should not be empty")
+	}
+	if password == "" {
+		data.PasswordError = "Password should not be empty"
+
+		return compare, data, fmt.Errorf(data.PasswordError)
+	}
+	compare, err := uc.UserRepository.FetchUser(email)
+	if err != nil {
+		fmt.Println("Error querying the database:", err)
+		data.EmailError = "user not found"
+		return compare, data, fmt.Errorf(data.EmailError)
+	}
+
+	err = helpers.VerifyPassword(password, compare.Password)
+	if err != nil {
+		fmt.Println("helopass")
+		fmt.Println("compare", compare)
+		data.PasswordError = "Check password again"
+
+		return compare, data, fmt.Errorf(data.PasswordError)
+	}
+	if compare.Role != "user" {
+		data.RoleError = "Click here for admin login -->"
+		return compare, data, fmt.Errorf(data.RoleError)
+	}
+	if compare.Status != "active" {
+		fmt.Println("user blocked")
+		data.StatusError = "User is blocked"
+		return compare, data, fmt.Errorf(data.StatusError)
+	}
+	return compare, data, nil
 }
 
 func (uc *UserUseCase) RegisterUser(user *entity.User) error {
@@ -105,61 +138,52 @@ func (uc *UserUseCase) RegisterUser(user *entity.User) error {
 	return nil
 }
 
-func (uc *UserUseCase) GenerateOTP() (string, error) {
-	source := rand.NewSource(time.Now().UnixNano())
-	randGen := rand.New(source)
-	return fmt.Sprintf("%06d", randGen.Intn(1000000)), nil
-}
+// func (uc *UserUseCase) GenerateOTP() (string, error) {
+// 	source := rand.NewSource(time.Now().UnixNano())
+// 	randGen := rand.New(source)
+// 	return fmt.Sprintf("%06d", randGen.Intn(1000000)), nil
+// }
 
-var otpMap = make(map[string]string)
+// var otpMap = make(map[string]string)
 
-func (uc *UserUseCase) SendOTP(otp, email, femail, epassword string) error {
-	from := femail
-	password := epassword
-	to := email
-	log.Println("email", email, otp)
-	smtpServer := "smtp.gmail.com"
-	smtpPort := "587"
-	otpMap[email] = otp
+// func (uc *UserUseCase) SendOTP(otp, email, femail, epassword string) error {
+// 	from := femail
+// 	password := epassword
+// 	to := email
+// 	log.Println("email", email, otp)
+// 	smtpServer := "smtp.gmail.com"
+// 	smtpPort := "587"
+// 	otpMap[email] = otp
 
-	auth := smtp.PlainAuth("", from, password, smtpServer)
+// 	auth := smtp.PlainAuth("", from, password, smtpServer)
 
-	message := fmt.Sprintf("Subject: Your OTP\n\nYour OTP is: %s", otp)
+// 	message := fmt.Sprintf("Subject: Your OTP\n\nYour OTP is: %s", otp)
 
-	err := smtp.SendMail(smtpServer+":"+smtpPort, auth, from, []string{to}, []byte(message))
-	if err != nil {
-		return err
-	}
+// 	err := smtp.SendMail(smtpServer+":"+smtpPort, auth, from, []string{to}, []byte(message))
+// 	if err != nil {
+// 		return err
+// 	}
 
-	return nil
-}
-func (uc *UserUseCase) VerifyOTP(otp string, email string) error {
-	userEmail := email
-	enteredOTP := otp
+// 	return nil
+// }
+// func (uc *UserUseCase) VerifyOTP(otp string, email string) error {
+// 	userEmail := email
+// 	enteredOTP := otp
 
-	storedOTP, ok := otpMap[userEmail]
-	if !ok {
-		return errors.New("OTP not found for the given Email")
-	}
+// 	storedOTP, ok := otpMap[userEmail]
+// 	if !ok {
+// 		return errors.New("OTP not found for the given Email")
+// 	}
 
-	if enteredOTP == storedOTP {
-		// Clear the OTP from the map after successful verification
-		delete(otpMap, userEmail)
-		// Render HTML page with a success message
-		// c.HTML(http.StatusOK, "verify.html", gin.H{"message": "OTP verified successfully"})
-		// // Send JSON response with the same success message
-		// c.JSON(http.StatusOK, gin.H{"message": "OTP verified successfully"})
-		return nil
-	} else {
-		return errors.New("invalid otp")
-	}
-}
-func (uc *UserUseCase) HashPassword(password string) (string, error) {
-
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
-	if err != nil {
-		return "", err
-	}
-	return string(hash), nil
-
-}
+// 	if enteredOTP == storedOTP {
+// 		// Clear the OTP from the map after successful verification
+// 		delete(otpMap, userEmail)
+// 		// Render HTML page with a success message
+// 		// c.HTML(http.StatusOK, "verify.html", gin.H{"message": "OTP verified successfully"})
+// 		// // Send JSON response with the same success message
+// 		// c.JSON(http.StatusOK, gin.H{"message": "OTP verified successfully"})
+// 		return nil
+// 	} else {
+// 		return errors.New("invalid otp")
+// 	}
+// }

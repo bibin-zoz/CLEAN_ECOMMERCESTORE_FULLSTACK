@@ -28,7 +28,10 @@ func main() {
 	router.GET("/register", userHandler.Signup)
 	router.POST("/register", userHandler.RegisterUser)
 	router.GET("/verify", userHandler.VerifyHandler)
-	router.POST("/verify", userHandler.VerifyPostHandler)
+	router.POST("/verify", userHandler.VerifyPost)
+	router.GET("/login", userHandler.LoginHandler)
+	router.POST("/login", userHandler.LoginPost)
+
 	api := router.Group("/api")
 	{
 		userAPI := api.Group("/user")
