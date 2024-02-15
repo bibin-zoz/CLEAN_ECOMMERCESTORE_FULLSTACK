@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"cleancode/entity"
+	"cleancode/pkg/entity"
 	"encoding/json"
 	"errors"
 	"fmt"

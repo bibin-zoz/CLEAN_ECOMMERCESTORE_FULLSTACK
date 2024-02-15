@@ -2,7 +2,7 @@
 package interfaces
 
 import (
-	"cleancode/entity"
+	"cleancode/pkg/entity"
 )
 
 type UserUseCase interface {

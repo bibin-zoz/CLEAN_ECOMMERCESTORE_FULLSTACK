@@ -2,9 +2,9 @@
 package handlers
 
 import (
-	"cleancode/entity"
-	"cleancode/helpers"
-	"cleancode/usecase/interfaces"
+	"cleancode/pkg/entity"
+	"cleancode/pkg/helpers"
+	"cleancode/pkg/usecase/interfaces"
 	"fmt"
 	"log"
 	"net/http"
@@ -204,4 +204,20 @@ func (h *UserHandler) VerifyPost(c *gin.Context) {
 
 	// Redirect to /login with a success message
 	c.JSON(http.StatusOK, gin.H{"message": "User created successfully. Please log in."})
+}
+
+func (h *UserHandler) HomeHandler(c *gin.Context) {
+	var data entity.Invalid
+	data.LoginStatus = true
+	_, err := c.Cookie("auth")
+	if err != nil {
+		data.LoginStatus = false
+		fmt.Println("err")
+	}
+	fmt.Println("islogin", data.LoginStatus)
+	c.HTML(http.StatusOK, "home.html", gin.H{
+		// "Productvariants": ProductVariants,
+		"IsLogin":         data.LoginStatus,
+		"ProductVariants": nil,
+	})
 }

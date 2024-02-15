@@ -1,7 +1,7 @@
 // repository/user_repository.go
 package repository
 
-import "cleancode/entity"
+import "cleancode/pkg/entity"
 
 type UserRepository interface {
 	CheckExistingUsername(username string) (bool, error)

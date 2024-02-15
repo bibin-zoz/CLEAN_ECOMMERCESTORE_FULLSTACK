@@ -2,10 +2,10 @@
 package usecase
 
 import (
-	"cleancode/entity"
-	"cleancode/helpers"
-	repository "cleancode/respository/interfaces"
-	interfaceUseCase "cleancode/usecase/interfaces"
+	"cleancode/pkg/entity"
+	"cleancode/pkg/helpers"
+	repository "cleancode/pkg/respository/interfaces"
+	interfaceUseCase "cleancode/pkg/usecase/interfaces"
 	"fmt"
 	"regexp"
 )
@@ -131,9 +131,9 @@ func (uc *UserUseCase) RegisterUser(user *entity.User) error {
 	}
 
 	// Call repository method to save the user
-	// if err := uc.UserRepository.SaveUser(user); err != nil {
-	// 	return fmt.Errorf("error saving user: %v", err)
-	// }
+	if err := uc.UserRepository.SaveUser(user); err != nil {
+		return fmt.Errorf("error saving user: %v", err)
+	}
 
 	return nil
 }

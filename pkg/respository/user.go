@@ -2,7 +2,7 @@
 package repository
 
 import (
-	"cleancode/entity"
+	"cleancode/pkg/entity"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -31,7 +31,7 @@ func (r *UserRepositoryImpl) GetUserByUsername(username string) (*entity.User, e
 func (r *UserRepositoryImpl) FetchUser(Newmail string) (entity.Compare, error) {
 	var compare entity.Compare
 	fmt.Println(Newmail)
-	if err := r.DB.Raw("SELECT ID, password, username,email, role, status FROM user WHERE email=$1", Newmail).Scan(&compare).Error; err != nil {
+	if err := r.DB.Raw("SELECT ID, password, username,email, role, status FROM users WHERE email=$1", Newmail).Scan(&compare).Error; err != nil {
 		fmt.Println("Error querying the database:", err)
 		return compare, err
 	}
@@ -64,6 +64,7 @@ func (r *UserRepositoryImpl) CheckExistingNumber(number string) (bool, error) {
 }
 
 func (r *UserRepositoryImpl) SaveUser(user *entity.User) error {
+	fmt.Println("user", user)
 	if err := r.DB.Create(user).Error; err != nil {
 		return fmt.Errorf("Error saving user: %v", err)
 	}

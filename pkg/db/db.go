@@ -1,7 +1,7 @@
 package database
 
 import (
-	models "cleancode/entity"
+	models "cleancode/pkg/entity"
 	"log"
 	"os"
 
