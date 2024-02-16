@@ -242,3 +242,13 @@ func (h *UserHandler) AddAddress(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"Success": "Address added successfully"})
 
 }
+func (ur *UserHandler) GetAllAddress(c *gin.Context) {
+	userID, _ := helpers.GetID(c)
+	addressInfo, err := ur.UserUseCase.GetAllAddress(int(userID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to retrieve details"})
+		return
+	}
+	c.JSON(http.StatusOK, addressInfo)
+
+}

@@ -36,7 +36,7 @@ func main() {
 
 	address := router.Group("/address")
 	{
-		// address.GET("", userHandler.GetAllAddress)
+		address.GET("", userHandler.GetAllAddress)
 		address.POST("", userHandler.AddAddress)
 
 	}

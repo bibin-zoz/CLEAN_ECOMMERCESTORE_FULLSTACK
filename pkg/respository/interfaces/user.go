@@ -10,4 +10,7 @@ type UserRepository interface {
 	SaveUser(user *entity.User) error
 	FetchUser(Newmail string) (entity.Compare, error)
 	AddAddress(userID int, address entity.UserAddress) error
+	UserDetails(userID int) (entity.UserDetail, error)
+	FindUserByEmail(user entity.LoginDetail) (entity.User, error)
+	GetAllAddress(userId int) ([]entity.AddressInfoResponse, error)
 }

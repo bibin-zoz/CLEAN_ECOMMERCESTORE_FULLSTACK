@@ -149,6 +149,15 @@ func (uc *UserUseCase) AddAddress(userID int, address entity.UserAddress) error 
 	return nil
 }
 
+func (uc *UserUseCase) GetAllAddress(userId int) ([]entity.AddressInfoResponse, error) {
+	addressInfo, err := uc.UserRepository.GetAllAddress(userId)
+	if err != nil {
+		return []entity.AddressInfoResponse{}, err
+	}
+	return addressInfo, nil
+
+}
+
 // func (uc *UserUseCase) GenerateOTP() (string, error) {
 // 	source := rand.NewSource(time.Now().UnixNano())
 // 	randGen := rand.New(source)
