@@ -34,6 +34,13 @@ func main() {
 	router.POST("/login", middleware.IsLogin(), userHandler.LoginPost)
 	router.GET("/home", middleware.LoginAuth(), userHandler.HomeHandler)
 
+	address := router.Group("/address")
+	{
+		// address.GET("", userHandler.GetAllAddress)
+		address.POST("", userHandler.AddAddress)
+
+	}
+
 	api := router.Group("/api")
 	{
 		userAPI := api.Group("/user")

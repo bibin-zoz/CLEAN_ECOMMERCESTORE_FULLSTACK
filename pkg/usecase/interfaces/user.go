@@ -9,4 +9,5 @@ type UserUseCase interface {
 	RegisterUser(user *entity.User) error
 
 	LoginUser(email, password string) (entity.Compare, entity.Invalid, error)
+	AddAddress(userID int, address entity.UserAddress) error
 }

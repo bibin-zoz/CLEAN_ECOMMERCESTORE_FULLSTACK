@@ -6,6 +6,7 @@ import (
 	"cleancode/pkg/helpers"
 	repository "cleancode/pkg/respository/interfaces"
 	interfaceUseCase "cleancode/pkg/usecase/interfaces"
+	"errors"
 	"fmt"
 	"regexp"
 )
@@ -24,7 +25,7 @@ func (uc *UserUseCase) LoginUser(email, password string) (entity.Compare, entity
 	var compare entity.Compare
 	if email == "" {
 		data.EmailError = "Email should not be empty"
-		return compare, data, fmt.Errorf("Email should not be empty")
+		return compare, data, fmt.Errorf("email should not be empty")
 	}
 	if password == "" {
 		data.PasswordError = "Password should not be empty"
@@ -135,6 +136,16 @@ func (uc *UserUseCase) RegisterUser(user *entity.User) error {
 		return fmt.Errorf("error saving user: %v", err)
 	}
 
+	return nil
+
+}
+
+func (uc *UserUseCase) AddAddress(userID int, address entity.UserAddress) error {
+	fmt.Println("adddddd")
+	err := uc.UserRepository.AddAddress(userID, address)
+	if err != nil {
+		return errors.New("could not add the address")
+	}
 	return nil
 }
 

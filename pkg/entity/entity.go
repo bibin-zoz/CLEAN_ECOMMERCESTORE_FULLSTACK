@@ -19,6 +19,10 @@ type Invalid struct {
 	DateError     string
 	StatusError   string
 }
+type LoginDetail struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
 type Claims struct {
 	ID       uint   `json:"id"`
 	Username string `json:"username"`

@@ -66,13 +66,12 @@ func (h *UserHandler) LoginHandler(c *gin.Context) {
 func (h *UserHandler) LoginPost(c *gin.Context) {
 	Newmail := c.Request.FormValue("email")
 	Newpassword := c.Request.FormValue("password")
-	// var compare entity.Compare
-	// var data entity.Invalid
 
-	compare, data, error := h.UserUseCase.LoginUser(Newmail, Newpassword)
-	if error != nil {
-		c.HTML(http.StatusOK, "login.html", data)
-		fmt.Println("hi")
+	compare, data, err := h.UserUseCase.LoginUser(Newmail, Newpassword)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": data.PasswordError, // You might want to customize this based on your error handling.
+		})
 		return
 	}
 
@@ -86,30 +85,28 @@ func (h *UserHandler) LoginPost(c *gin.Context) {
 
 	accessToken, err := helpers.GenerateAccessToken(claims)
 	if err != nil {
-		fmt.Println("Error generating access token:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error generating access token"})
 		return
 	}
 
 	refreshToken, err := helpers.GenerateRefreshToken(claims)
 	if err != nil {
-		fmt.Println("Error generating refresh token:", err)
-
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error generating refresh token"})
 		return
 	}
 
 	UserLoginDetails := &entity.TokenUser{
-		// Users:        claims,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}
-	userDetailsJSON := helpers.CreateJson(UserLoginDetails)
 
-	c.SetCookie("auth", string(userDetailsJSON), 0, "/", "", true, true)
+	c.SetCookie("auth", string(helpers.CreateJson(UserLoginDetails)), 0, "/", "", true, true)
 
-	c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
-	c.Header("Expires", "0")
-
-	c.Redirect(http.StatusFound, "/home")
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Login successful",
+		"user":    claims,
+		"tokens":  UserLoginDetails,
+	})
 }
 
 var lastOTPSendTime time.Time
@@ -220,4 +217,28 @@ func (h *UserHandler) HomeHandler(c *gin.Context) {
 		"IsLogin":         data.LoginStatus,
 		"ProductVariants": nil,
 	})
+}
+
+func (h *UserHandler) AddAddress(c *gin.Context) {
+	userID, _ := helpers.GetID(c)
+	var address entity.UserAddress
+	if err := c.ShouldBindJSON(&address); err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": "fields provided are in wrong format"})
+		return
+	}
+	// err := validator.New().Struct(address)
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "constraints does not match"})
+	// 	return
+	// }
+	err := h.UserUseCase.AddAddress(int(userID), address)
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed adding address"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Success": "Address added successfully"})
+
 }

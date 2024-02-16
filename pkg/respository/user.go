@@ -3,6 +3,7 @@ package repository
 
 import (
 	"cleancode/pkg/entity"
+	"errors"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -67,6 +68,13 @@ func (r *UserRepositoryImpl) SaveUser(user *entity.User) error {
 	fmt.Println("user", user)
 	if err := r.DB.Create(user).Error; err != nil {
 		return fmt.Errorf("Error saving user: %v", err)
+	}
+	return nil
+}
+func (r *UserRepositoryImpl) AddAddress(userID int, address entity.UserAddress) error {
+	result := r.DB.Create(&address)
+	if result.Error != nil {
+		return errors.New("could not add address")
 	}
 	return nil
 }

@@ -96,21 +96,28 @@ func CreateJson(token *entity.TokenUser) (userDetailsJSON []byte) {
 
 }
 func GetID(c *gin.Context) (uint, error) {
-	usercookie, _ := c.Cookie("auth")
-	var token entity.TokenUser
-	err := json.NewDecoder(strings.NewReader(usercookie)).Decode(&token)
+	usercookie, err := c.Cookie("auth")
 	if err != nil {
-		fmt.Println("Error fetching UserDetails:", err)
+		fmt.Println("Error retrieving auth cookie:", err)
+		return 0, err
+	}
+
+	fmt.Println("Cookie Content:", usercookie)
+
+	var token entity.TokenUser
+	err = json.NewDecoder(strings.NewReader(usercookie)).Decode(&token)
+	if err != nil {
+		fmt.Println("Error decoding UserDetails:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch user details"})
 		return 0, err
 	}
 
 	Claims, err := ParseToken(token.AccessToken)
 	if err != nil {
-		fmt.Println("Error fetching UserDetails:", err)
+		fmt.Println("Error fetching UserDetails from token:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse user details from token"})
 		return 0, err
 	}
-	return Claims.ID, nil
 
+	return Claims.ID, nil
 }

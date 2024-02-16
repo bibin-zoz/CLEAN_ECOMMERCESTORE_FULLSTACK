@@ -2,6 +2,7 @@ package database
 
 import (
 	models "cleancode/pkg/entity"
+	"fmt"
 	"log"
 	"os"
 
@@ -32,7 +33,9 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		log.Fatal("Failed to connect to the database")
 	}
-	if err := DB.AutoMigrate(&models.User{}, models.ReferalDetails{}); err != nil {
+	err = DB.AutoMigrate(&models.User{}, models.ReferalDetails{}, models.UserAddress{})
+	if err != nil {
+		fmt.Println("database creating errro")
 
 		panic(err)
 	}
