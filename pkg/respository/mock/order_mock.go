@@ -109,10 +109,10 @@ func (mr *MockUserRepositoryMockRecorder) FetchUser(Newmail interface{}) *gomock
 }
 
 // FindUserByEmail mocks base method.
-func (m *MockUserRepository) FindUserByEmail(user entity.LoginDetail) (entity.User, error) {
+func (m *MockUserRepository) FindUserByEmail(user entity.LoginDetail) (entity.UserLoginResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindUserByEmail", user)
-	ret0, _ := ret[0].(entity.User)
+	ret0, _ := ret[0].(entity.UserLoginResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
