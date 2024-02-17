@@ -11,6 +11,6 @@ type UserRepository interface {
 	FetchUser(Newmail string) (entity.Compare, error)
 	AddAddress(userID int, address entity.UserAddress) error
 	UserDetails(userID int) (entity.UserDetail, error)
-	FindUserByEmail(user entity.LoginDetail) (entity.User, error)
+	FindUserByEmail(user entity.LoginDetail) (entity.UserLoginResponse, error)
 	GetAllAddress(userId int) ([]entity.AddressInfoResponse, error)
 }

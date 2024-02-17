@@ -40,11 +40,11 @@ func (r *UserRepositoryImpl) FetchUser(Newmail string) (entity.Compare, error) {
 	return compare, nil
 }
 
-func (r *UserRepositoryImpl) FindUserByEmail(user entity.LoginDetail) (entity.User, error) {
-	var userDetails entity.User
+func (r *UserRepositoryImpl) FindUserByEmail(user entity.LoginDetail) (entity.UserLoginResponse, error) {
+	var userDetails entity.UserLoginResponse
 	err := r.DB.Raw("SELECT * FROM users WHERE email=?", user.Email).Scan(&userDetails).Error
 	if err != nil {
-		return entity.User{}, errors.New("error checking user details")
+		return entity.UserLoginResponse{}, errors.New("error checking user details")
 	}
 	return userDetails, nil
 }
@@ -103,7 +103,7 @@ func (r *UserRepositoryImpl) UserDetails(userID int) (entity.UserDetail, error) 
 }
 func (r *UserRepositoryImpl) GetAllAddress(userId int) ([]entity.AddressInfoResponse, error) {
 	var addressInfoResponse []entity.AddressInfoResponse
-	if err := r.DB.Raw("SELECT * FROM user_addresses WHERE user_id = ?", userId).Scan(&addressInfoResponse).Error; err != nil {
+	if err := r.DB.Raw("SELECT * FROM addresses WHERE user_id = ?", userId).Scan(&addressInfoResponse).Error; err != nil {
 		return []entity.AddressInfoResponse{}, err
 	}
 	return addressInfoResponse, nil
