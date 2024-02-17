@@ -32,7 +32,7 @@ jobs:
           key: ${{secrets.EC2_SSH_KEY}}
           script: |
             echo "Connected to AWS EC2 instance"
-            cd cleanstore
+            cd CLEAN_ECOMMERCESTORE_FULLSTACK
             git pull
             go build -o api ./cmd/api
            
