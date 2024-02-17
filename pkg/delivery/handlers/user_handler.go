@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator"
 )
 
 type UserHandler struct {
@@ -25,27 +26,22 @@ func NewUserHandler(userUseCase interfaces.UserUseCase) *UserHandler {
 var User entity.User
 
 func (h *UserHandler) RegisterUser(c *gin.Context) {
-
 	user := entity.User{
 		Username: c.Request.FormValue("username"),
 		Email:    c.Request.FormValue("email"),
 		Number:   c.Request.FormValue("number"),
 		Password: c.Request.FormValue("password"),
 	}
-	User = user
-	c.SetCookie("usermail", user.Email, 360, "/", "localhost", false, true)
 
-	// // Bind request data to User struct
-	// if err := c.ShouldBindJSON(&user); err != nil {
-	// 	fmt.Println("error", user)
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	fmt.Println("hii")
-	// Call the use case to register the user
+	err := validator.New().Struct(user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "failed")
+		return
+	}
 
-	fmt.Println("hii")
-	c.Redirect(http.StatusFound, "/verify")
+	log.Printf("User registered: %s", user.Email)
+
+	c.JSON(http.StatusCreated, "User successfully signed up")
 }
 
 func (h *UserHandler) Signup(c *gin.Context) {
@@ -62,7 +58,13 @@ func (h *UserHandler) LoginHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", data)
 
 }
+func (h *UserHandler) LogoutHandler(c *gin.Context) {
+	fmt.Println("user logut")
 
+	c.SetCookie("auth", "", -1, "/", "", false, true)
+
+	c.Redirect(http.StatusSeeOther, "/login")
+}
 func (h *UserHandler) LoginPost(c *gin.Context) {
 	Newmail := c.Request.FormValue("email")
 	Newpassword := c.Request.FormValue("password")

@@ -32,6 +32,7 @@ func main() {
 	router.POST("/verify", userHandler.VerifyPost)
 	router.GET("/login", middleware.IsLogin(), userHandler.LoginHandler)
 	router.POST("/login", middleware.IsLogin(), userHandler.LoginPost)
+	router.POST("/logout", middleware.IsLogin(), userHandler.LogoutHandler)
 	router.GET("/home", middleware.LoginAuth(), userHandler.HomeHandler)
 
 	address := router.Group("/address")
