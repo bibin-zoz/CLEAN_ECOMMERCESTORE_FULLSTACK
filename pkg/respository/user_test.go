@@ -25,7 +25,7 @@ func Test_GetUserDetails(t *testing.T) {
 			name: "success",
 			args: 2,
 			stub: func(mockSQL sqlmock.Sqlmock) {
-				expectQuery := `SELECT u.username,u.email,u.phonenumber FROM users u WHERE u.id = ?`
+				expectQuery := `SELECT u.username,u.email,u.number FROM users u WHERE u.id = ?`
 				mockSQL.ExpectQuery(expectQuery).WillReturnRows(sqlmock.NewRows([]string{"username", "email", "phonenumber"}).AddRow("bibin", "bibin@gmail.com", "9087678564"))
 			},
 			want: models.UserDetail{
@@ -39,7 +39,7 @@ func Test_GetUserDetails(t *testing.T) {
 			name: "error",
 			args: 1,
 			stub: func(mockSQL sqlmock.Sqlmock) {
-				expectQuery := `SELECT u.username,u.email,u.phone FROM users u WHERE u.id = ?`
+				expectQuery := `SELECT u.username,u.email,u.number FROM users u WHERE u.id = ?`
 				mockSQL.ExpectQuery(expectQuery).WillReturnError(errors.New("error"))
 			},
 			want:    models.UserDetail{},

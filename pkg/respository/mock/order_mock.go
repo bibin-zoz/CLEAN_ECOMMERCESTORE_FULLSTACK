@@ -166,3 +166,18 @@ func (mr *MockUserRepositoryMockRecorder) UserDetails(userID interface{}) *gomoc
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UserDetails", reflect.TypeOf((*MockUserRepository)(nil).UserDetails), userID)
 }
+
+// UserSignUp mocks base method.
+func (m *MockUserRepository) UserSignUp(user entity.UserSignUp) (entity.UserDetailsResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UserSignUp", user)
+	ret0, _ := ret[0].(entity.UserDetailsResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UserSignUp indicates an expected call of UserSignUp.
+func (mr *MockUserRepositoryMockRecorder) UserSignUp(user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UserSignUp", reflect.TypeOf((*MockUserRepository)(nil).UserSignUp), user)
+}

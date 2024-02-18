@@ -164,6 +164,15 @@ func (uc *UserUseCase) GetAllAddress(userId int) ([]entity.AddressInfoResponse, 
 	return addressInfo, nil
 
 }
+func (uc *UserUseCase) GetUserDetails(userId int) (entity.UserDetail, error) {
+	UserDetail, err := uc.UserRepository.UserDetails(userId)
+	if err != nil {
+		fmt.Println("errrrrrrrrrrrrrr", err)
+		return UserDetail, err
+	}
+	return UserDetail, nil
+
+}
 
 // func (uc *UserUseCase) GenerateOTP() (string, error) {
 // 	source := rand.NewSource(time.Now().UnixNano())

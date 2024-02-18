@@ -40,14 +40,14 @@ func (r *UserRepositoryImpl) FetchUser(Newmail string) (entity.Compare, error) {
 	return compare, nil
 }
 
-func (r *UserRepositoryImpl) FindUserByEmail(user entity.LoginDetail) (entity.UserLoginResponse, error) {
-	var userDetails entity.UserLoginResponse
-	err := r.DB.Raw("SELECT * FROM users WHERE email=?", user.Email).Scan(&userDetails).Error
-	if err != nil {
-		return entity.UserLoginResponse{}, errors.New("error checking user details")
-	}
-	return userDetails, nil
-}
+// func (r *UserRepositoryImpl) FindUserByEmail(user entity.LoginDetail) (entity.UserLoginResponse, error) {
+// 	var userDetails entity.UserLoginResponse
+// 	err := r.DB.Raw("SELECT * FROM users WHERE email=?", user.Email).Scan(&userDetails).Error
+// 	if err != nil {
+// 		return entity.UserLoginResponse{}, errors.New("error checking user details")
+// 	}
+// 	return userDetails, nil
+// }
 
 func (r *UserRepositoryImpl) CheckExistingUsername(username string) (bool, error) {
 	var count int64
@@ -74,13 +74,13 @@ func (r *UserRepositoryImpl) CheckExistingNumber(number string) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *UserRepositoryImpl) SaveUser(user *entity.User) error {
-	fmt.Println("user", user)
-	if err := r.DB.Create(user).Error; err != nil {
-		return fmt.Errorf("wrror saving user: %v", err)
-	}
-	return nil
-}
+// func (r *UserRepositoryImpl) SaveUser(user *entity.User) error {
+// 	fmt.Println("user", user)
+// 	if err := r.DB.Create(user).Error; err != nil {
+// 		return fmt.Errorf("wrror saving user: %v", err)
+// 	}
+// 	return nil
+// }
 
 func (r *UserRepositoryImpl) UserSignUp(user entity.UserSignUp) (entity.UserDetailsResponse, error) {
 	var signupDetail entity.UserDetailsResponse
@@ -111,7 +111,7 @@ func (r *UserRepositoryImpl) AddAddress(userID int, address entity.UserAddress) 
 
 func (r *UserRepositoryImpl) UserDetails(userID int) (entity.UserDetail, error) {
 	var userDetails entity.UserDetail
-	err := r.DB.Raw("SELECT u.username,u.email,u.phonenumber FROM users u WHERE u.id = ?", userID).Row().Scan(&userDetails.UserName, &userDetails.Email, &userDetails.PhoneNumber)
+	err := r.DB.Raw("SELECT u.username,u.email,u.number FROM users u WHERE u.id = ?", userID).Row().Scan(&userDetails.UserName, &userDetails.Email, &userDetails.PhoneNumber)
 	if err != nil {
 		return entity.UserDetail{}, errors.New("could not get user details")
 	}

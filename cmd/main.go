@@ -34,6 +34,7 @@ func main() {
 	router.POST("/login", middleware.IsLogin(), userHandler.LoginPost)
 	router.POST("/logout", middleware.IsLogin(), userHandler.LogoutHandler)
 	router.GET("/home", middleware.LoginAuth(), userHandler.HomeHandler)
+	router.GET("/profile", middleware.LoginAuth(), userHandler.UserProfileHandler)
 
 	address := router.Group("/address")
 	{

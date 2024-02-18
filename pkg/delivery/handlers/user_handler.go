@@ -63,7 +63,11 @@ func (h *UserHandler) LogoutHandler(c *gin.Context) {
 
 	c.SetCookie("auth", "", -1, "/", "", false, true)
 
-	c.Redirect(http.StatusSeeOther, "/login")
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Logout successful",
+	})
+
 }
 func (h *UserHandler) LoginPost(c *gin.Context) {
 	Newmail := c.Request.FormValue("email")
@@ -98,6 +102,7 @@ func (h *UserHandler) LoginPost(c *gin.Context) {
 	}
 
 	UserLoginDetails := &entity.TokenUser{
+		Users:        claims,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}
@@ -252,5 +257,21 @@ func (ur *UserHandler) GetAllAddress(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, addressInfo)
+
+}
+
+func (ur *UserHandler) UserProfileHandler(c *gin.Context) {
+	userID, err := helpers.GetID(c)
+	fmt.Println("user", userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to retrieve userid"})
+		return
+	}
+	userDetails, err := ur.UserUseCase.GetUserDetails(int(userID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to retrieve details"})
+		return
+	}
+	c.JSON(http.StatusOK, userDetails)
 
 }

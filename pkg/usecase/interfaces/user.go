@@ -11,4 +11,5 @@ type UserUseCase interface {
 	LoginUser(email, password string) (entity.Compare, entity.Invalid, error)
 	AddAddress(userID int, address entity.UserAddress) error
 	GetAllAddress(userId int) ([]entity.AddressInfoResponse, error)
+	GetUserDetails(userId int) (entity.UserDetail, error)
 }
