@@ -30,19 +30,17 @@ type Claims struct {
 }
 
 type UserSignUp struct {
-	Firstname    string `json:"firstname" validate:"gte=3"`
-	Lastname     string `json:"lastname" validate:"gte=1"`
-	Email        string `json:"email" validate:"email"`
-	Password     string `json:"password" validate:"min=6,max=20"`
-	Phone        string `json:"phone" validate:"e164"`
-	ReferralCode string `json:"referral_code"`
+	Username string `json:"username" validate:"gte=3"`
+	Lastname string `json:"lastname" validate:"gte=1"`
+	Email    string `json:"email" validate:"email"`
+	Password string `json:"password" validate:"min=6,max=20"`
+	Number   string `json:"number"`
 }
 type UserDetailsResponse struct {
-	Id        int    `json:"id"`
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Email     string `json:"email"`
-	Phone     string `json:"phone"`
+	Id       int    `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Number   string `json:"number"`
 }
 type UserDetailsAtAdmin struct {
 	Id          int    `json:"id"`

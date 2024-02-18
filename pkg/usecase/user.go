@@ -132,7 +132,14 @@ func (uc *UserUseCase) RegisterUser(user *entity.User) error {
 	}
 
 	// Call repository method to save the user
-	if err := uc.UserRepository.SaveUser(user); err != nil {
+	usersignup := entity.UserSignUp{
+		Username: user.Username,
+		Email:    user.Email,
+		Number:   user.Number,
+		Password: user.Password,
+	}
+	_, err = uc.UserRepository.UserSignUp(usersignup)
+	if err != nil {
 		return fmt.Errorf("error saving user: %v", err)
 	}
 

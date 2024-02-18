@@ -4,6 +4,7 @@ import (
 	"cleancode/pkg/entity"
 	models "cleancode/pkg/entity"
 	"errors"
+	"reflect"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -38,7 +39,7 @@ func Test_GetUserDetails(t *testing.T) {
 			name: "error",
 			args: 1,
 			stub: func(mockSQL sqlmock.Sqlmock) {
-				expectQuery := `SELECT u.firstname,u.lastname,u.email,u.phone FROM users u WHERE u.id = ?`
+				expectQuery := `SELECT u.username,u.email,u.phone FROM users u WHERE u.id = ?`
 				mockSQL.ExpectQuery(expectQuery).WillReturnError(errors.New("error"))
 			},
 			want:    models.UserDetail{},
@@ -117,6 +118,77 @@ func Test_GetAllAddress(t *testing.T) {
 			result, err := u.GetAllAddress(tt.args)
 			assert.Equal(t, tt.want, result)
 			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+}
+
+func TestUserSignUp(t *testing.T) {
+	type args struct {
+		input models.UserSignUp
+	}
+	tests := []struct {
+		name       string
+		args       args
+		beforeTest func(mockSQL sqlmock.Sqlmock)
+		want       models.UserDetailsResponse
+		wantErr    error
+	}{
+		{
+			name: "success signup user",
+			args: args{
+				input: models.UserSignUp{
+					Username: "bibin",
+					Email:    "bibin@gmail.com",
+					Password: "12345",
+					Number:   "7565748990",
+				},
+			},
+			beforeTest: func(mockSQL sqlmock.Sqlmock) {
+				expectedQuery := `INSERT INTO users\(username, email, password, number\) VALUES\(\$1, \$2, \$3, \$4\) RETURNING id, username, email, number`
+				mockSQL.ExpectQuery(expectedQuery).
+					WithArgs("bibin", "bibin@gmail.com", "12345", "7565748990").
+					WillReturnRows(sqlmock.NewRows([]string{"id", "username", "email", "number"}).
+						AddRow(1, "bibin", "bibin@gmail.com", "7565748990"))
+			},
+
+			want: models.UserDetailsResponse{
+				Id:       1,
+				Username: "bibin",
+				Email:    "bibin@gmail.com",
+				Number:   "7565748990",
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error signup user",
+			args: args{
+				input: models.UserSignUp{},
+			},
+			beforeTest: func(mockSQL sqlmock.Sqlmock) {
+				expectedQuery := `INSERT INTO users\(username, email, password, number\) VALUES\(\$1, \$2, \$3, \$4\) RETURNING id, username, email, number`
+				mockSQL.ExpectQuery(expectedQuery).
+					WithArgs("", "", "", "").
+					WillReturnError(errors.New("email should be unique"))
+			},
+
+			want:    models.UserDetailsResponse{},
+			wantErr: errors.New("email should be unique"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+			tt.beforeTest(mockSQL)
+			u := NewUserRepository(gormDB)
+			got, err := u.UserSignUp(tt.args.input)
+			assert.Equal(t, tt.wantErr, err)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("userRepo.UserSignUp() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

@@ -13,4 +13,5 @@ type UserRepository interface {
 	UserDetails(userID int) (entity.UserDetail, error)
 	FindUserByEmail(user entity.LoginDetail) (entity.UserLoginResponse, error)
 	GetAllAddress(userId int) ([]entity.AddressInfoResponse, error)
+	UserSignUp(user entity.UserSignUp) (entity.UserDetailsResponse, error)
 }

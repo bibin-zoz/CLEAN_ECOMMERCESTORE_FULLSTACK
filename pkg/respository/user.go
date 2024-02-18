@@ -81,6 +81,22 @@ func (r *UserRepositoryImpl) SaveUser(user *entity.User) error {
 	}
 	return nil
 }
+
+func (r *UserRepositoryImpl) UserSignUp(user entity.UserSignUp) (entity.UserDetailsResponse, error) {
+	var signupDetail entity.UserDetailsResponse
+	err := r.DB.Raw(`
+		INSERT INTO users(username, email, password, number)
+		VALUES(?, ?, ?, ?)
+		RETURNING id, username, email, number,
+	`, user.Username, user.Email, user.Password, user.Number).
+		Scan(&signupDetail).Error
+
+	if err != nil {
+		return entity.UserDetailsResponse{}, err
+	}
+	return signupDetail, nil
+}
+
 func (r *UserRepositoryImpl) AddAddress(userID int, address entity.UserAddress) error {
 	query := "INSERT INTO user_addresses (user_id, street, city, state, postal_code, country, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)"
 	result := r.DB.Exec(query, userID, address.Street, address.City, address.State, address.PostalCode, address.Country, address.PhoneNumber)
