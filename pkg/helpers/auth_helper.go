@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -120,4 +121,41 @@ func GetID(c *gin.Context) (uint, error) {
 	}
 
 	return Claims.ID, nil
+}
+func ValidateSignup(user entity.User) (errorMsg string, isValid bool) {
+	if user.Username == "" {
+		return "Name should not be empty", false
+	}
+
+	if user.Email == "" {
+		return "Email should not be empty", false
+	}
+
+	// Validate email format
+	emailPattern := `^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`
+	emailRegex := regexp.MustCompile(emailPattern)
+	if !emailRegex.MatchString(user.Email) {
+		return "Email not in the correct format", false
+	}
+
+	if user.Number == "" {
+		return "Number should not be empty", false
+	}
+
+	// Validate mobile number format
+	numberPattern := `^[0-9]{10}$`
+	numberRegex := regexp.MustCompile(numberPattern)
+	if !numberRegex.MatchString(user.Number) {
+		return "Invalid Mobile Number", false
+	}
+
+	if user.Password == "" {
+		return "Password should not be empty", false
+	}
+
+	if len(user.Password) < 6 {
+		return "Password length should be at least 6 characters", false
+	}
+
+	return "", true
 }

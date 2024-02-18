@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator"
 )
 
 type UserHandler struct {
@@ -31,17 +30,18 @@ func (h *UserHandler) RegisterUser(c *gin.Context) {
 		Email:    c.Request.FormValue("email"),
 		Number:   c.Request.FormValue("number"),
 		Password: c.Request.FormValue("password"),
+		// ConfirmPassword: c.Request.FormValue("confirmPassword"),
 	}
 
-	err := validator.New().Struct(user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, "failed")
+	errors, isValid := helpers.ValidateSignup(user)
+	if !isValid {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": errors})
 		return
 	}
 
 	log.Printf("User registered: %s", user.Email)
 
-	c.JSON(http.StatusCreated, "User successfully signed up")
+	c.JSON(http.StatusCreated, gin.H{"message": "User Details Validated.. Proceed to verification"})
 }
 
 func (h *UserHandler) Signup(c *gin.Context) {

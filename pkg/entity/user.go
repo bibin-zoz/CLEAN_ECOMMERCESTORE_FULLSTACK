@@ -9,10 +9,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"unique;not null"`
-	Email    string `gorm:"unique;not null"`
-	Number   string `gorm:"unique;not null"`
-	Password string `gorm:"not null"`
+	Username string `gorm:"unique;not null" validate:"required,min=3,max=50"`
+	Email    string `gorm:"unique;not null" validate:"required,email"`
+	Number   string `gorm:"unique;not null" validate:"required,min=10,max=15"`
+	Password string `gorm:"not null" validate:"required,min=6"`
 	Role     string `gorm:"default:'user'"`
 	Status   string `gorm:"default:'active'"`
 	// ReferalDetails ReferalDetails
