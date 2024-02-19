@@ -21,5 +21,5 @@ func VerifyPassword(password, hashedPassword string) error {
 	if err != nil {
 		return err // Passwords don't match
 	}
-	return nil // Passwords match
+	return nil // Passwords matchsss
 }
