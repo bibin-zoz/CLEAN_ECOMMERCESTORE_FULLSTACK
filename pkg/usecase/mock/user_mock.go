@@ -63,6 +63,21 @@ func (mr *MockUserUseCaseMockRecorder) GetAllAddress(userId interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAddress", reflect.TypeOf((*MockUserUseCase)(nil).GetAllAddress), userId)
 }
 
+// GetUserDetails mocks base method.
+func (m *MockUserUseCase) GetUserDetails(userId int) (entity.UserDetail, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserDetails", userId)
+	ret0, _ := ret[0].(entity.UserDetail)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserDetails indicates an expected call of GetUserDetails.
+func (mr *MockUserUseCaseMockRecorder) GetUserDetails(userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserDetails", reflect.TypeOf((*MockUserUseCase)(nil).GetUserDetails), userId)
+}
+
 // LoginUser mocks base method.
 func (m *MockUserUseCase) LoginUser(email, password string) (entity.Compare, entity.Invalid, error) {
 	m.ctrl.T.Helper()

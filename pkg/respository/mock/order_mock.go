@@ -108,21 +108,6 @@ func (mr *MockUserRepositoryMockRecorder) FetchUser(Newmail interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchUser", reflect.TypeOf((*MockUserRepository)(nil).FetchUser), Newmail)
 }
 
-// FindUserByEmail mocks base method.
-func (m *MockUserRepository) FindUserByEmail(user entity.LoginDetail) (entity.UserLoginResponse, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindUserByEmail", user)
-	ret0, _ := ret[0].(entity.UserLoginResponse)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindUserByEmail indicates an expected call of FindUserByEmail.
-func (mr *MockUserRepositoryMockRecorder) FindUserByEmail(user interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserByEmail", reflect.TypeOf((*MockUserRepository)(nil).FindUserByEmail), user)
-}
-
 // GetAllAddress mocks base method.
 func (m *MockUserRepository) GetAllAddress(userId int) ([]entity.AddressInfoResponse, error) {
 	m.ctrl.T.Helper()
@@ -136,20 +121,6 @@ func (m *MockUserRepository) GetAllAddress(userId int) ([]entity.AddressInfoResp
 func (mr *MockUserRepositoryMockRecorder) GetAllAddress(userId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAddress", reflect.TypeOf((*MockUserRepository)(nil).GetAllAddress), userId)
-}
-
-// SaveUser mocks base method.
-func (m *MockUserRepository) SaveUser(user *entity.User) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveUser", user)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SaveUser indicates an expected call of SaveUser.
-func (mr *MockUserRepositoryMockRecorder) SaveUser(user interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveUser", reflect.TypeOf((*MockUserRepository)(nil).SaveUser), user)
 }
 
 // UserDetails mocks base method.
