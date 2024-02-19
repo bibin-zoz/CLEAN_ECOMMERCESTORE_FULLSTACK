@@ -41,7 +41,7 @@ func (h *UserHandler) RegisterUser(c *gin.Context) {
 
 	log.Printf("User registered: %s", user.Email)
 
-	c.JSON(http.StatusCreated, gin.H{"message": "User Details Validated.. Proceed to verification"})
+	c.JSON(http.StatusOK, "User Details Validated.. Proceed to verification")
 }
 
 func (h *UserHandler) Signup(c *gin.Context) {

@@ -16,7 +16,7 @@ func TestRegisterUser(t *testing.T) {
 	router := gin.Default()
 	router.POST("/register", userHandler.RegisterUser)
 
-	requestBody := bytes.NewBufferString("username=test&email=test@example.com&number=123456789&password=secretpassword")
+	requestBody := bytes.NewBufferString("username=test&email=test@example.com&number=1234506789&password=secretpassword")
 	request, err := http.NewRequest("POST", "/register", requestBody)
 	assert.NoError(t, err)
 
@@ -26,7 +26,7 @@ func TestRegisterUser(t *testing.T) {
 
 	router.ServeHTTP(responseRecorder, request)
 
-	assert.Equal(t, http.StatusCreated, responseRecorder.Code)
+	assert.Equal(t, http.StatusOK, responseRecorder.Code)
 
-	assert.Equal(t, "\"User successfully signed up\"", responseRecorder.Body.String())
+	assert.Equal(t, "\"User Details Validated.. Proceed to verification\"", responseRecorder.Body.String())
 }
