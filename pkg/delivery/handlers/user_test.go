@@ -2,11 +2,16 @@ package handlers
 
 import (
 	"bytes"
+	"cleancode/pkg/entity"
+	"cleancode/pkg/usecase/mock"
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,4 +34,82 @@ func TestRegisterUser(t *testing.T) {
 	assert.Equal(t, http.StatusOK, responseRecorder.Code)
 
 	assert.Equal(t, "\"User Details Validated.. Proceed to verification\"", responseRecorder.Body.String())
+}
+func Test_LoginHandler(t *testing.T) {
+	testCase := map[string]struct {
+		Newmail, Newpassword string
+		buildStub            func(useCaseMock *mock.MockUserUseCase, newmail, newpassword string)
+		checkResponse        func(t *testing.T, responseRecorder *httptest.ResponseRecorder)
+	}{
+		"Success": {
+			Newmail:     "bibin@gmail.com",
+			Newpassword: "asdasd",
+			buildStub: func(useCaseMock *mock.MockUserUseCase, newmail, newpassword string) {
+				compare := entity.Compare{
+					ID:       1,
+					Password: "asdasd",
+					Username: "bibin",
+					Email:    "bibin@gmail.com",
+					Role:     "user",
+					Status:   "active",
+				}
+
+				invalid := entity.Invalid{} // No validation errors for a successful login
+
+				// Adjust the following line to use the parameters directly
+				useCaseMock.EXPECT().LoginUser(newmail, newpassword).Times(1).Return(compare, invalid, nil)
+			},
+			checkResponse: func(t *testing.T, responseRecorder *httptest.ResponseRecorder) {
+				assert.Equal(t, http.StatusOK, responseRecorder.Code)
+				// Add additional assertions based on the expected response for a successful login
+			},
+		},
+
+		"User couldn't login": {
+			Newmail:     "bibin@gmail.com",
+			Newpassword: "no password",
+			buildStub: func(useCaseMock *mock.MockUserUseCase, newmail, newpassword string) {
+				compare := entity.Compare{} // You might adjust this based on your expectations
+				invalid := entity.Invalid{
+					PasswordError: "Check password again",
+				}
+
+				useCaseMock.EXPECT().LoginUser("bibin@gmail.com", "no password").Times(1).Return(compare, invalid, fmt.Errorf("cannot login up"))
+			},
+			checkResponse: func(t *testing.T, responseRecorder *httptest.ResponseRecorder) {
+				assert.Equal(t, http.StatusUnauthorized, responseRecorder.Code)
+
+				var responseBody map[string]string
+				err := json.Unmarshal(responseRecorder.Body.Bytes(), &responseBody)
+				assert.NoError(t, err)
+				assert.Equal(t, "Check password again", responseBody["error"])
+			},
+		},
+	}
+
+	for testName, test := range testCase {
+		test := test
+		t.Run(testName, func(t *testing.T) {
+			t.Parallel()
+			ctrl := gomock.NewController(t)
+			mockUseCase := mock.NewMockUserUseCase(ctrl)
+			test.buildStub(mockUseCase, test.Newmail, test.Newpassword)
+			UserHandler := NewUserHandler(mockUseCase)
+			server := gin.Default()
+
+			server.POST("/login", UserHandler.LoginPost)
+			jsonData, err := json.Marshal(map[string]string{
+				"email":     test.Newmail,
+				"password": test.Newpassword,
+			})
+
+			assert.NoError(t, err)
+			body := bytes.NewBuffer(jsonData)
+			mockRequest, err := http.NewRequest(http.MethodPost, "/login", body)
+			assert.NoError(t, err)
+			responseRecorder := httptest.NewRecorder()
+			server.ServeHTTP(responseRecorder, mockRequest)
+			test.checkResponse(t, responseRecorder)
+		})
+	}
 }

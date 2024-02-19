@@ -70,9 +70,15 @@ func (h *UserHandler) LogoutHandler(c *gin.Context) {
 
 }
 func (h *UserHandler) LoginPost(c *gin.Context) {
-	Newmail := c.Request.FormValue("email")
-	Newpassword := c.Request.FormValue("password")
+	var userData entity.LoginDetail
 
+	c.BindJSON(&userData)
+
+	// Newmail := c.Request.FormValue("email")
+	// Newpassword := c.Request.FormValue("password")
+	Newmail:=userData.Email
+	Newpassword:=userData.Password
+	fmt.Println("---------", Newmail, Newpassword)
 	compare, data, err := h.UserUseCase.LoginUser(Newmail, Newpassword)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
