@@ -35,6 +35,7 @@ func TestRegisterUser(t *testing.T) {
 
 	assert.Equal(t, "\"User Details Validated.. Proceed to verification\"", responseRecorder.Body.String())
 }
+
 func Test_LoginHandler(t *testing.T) {
 	testCase := map[string]struct {
 		Newmail, Newpassword string
@@ -48,20 +49,18 @@ func Test_LoginHandler(t *testing.T) {
 				compare := entity.Compare{
 					ID:       1,
 					Password: "asdasd",
-					Username: "bibin",
-					Email:    "bibin@gmail.com",
+					Username: "shah&007",
+					Email:    "sha@123.com",
 					Role:     "user",
 					Status:   "active",
 				}
 
-				invalid := entity.Invalid{} // No validation errors for a successful login
+				invalid := entity.Invalid{}
 
-				// Adjust the following line to use the parameters directly
 				useCaseMock.EXPECT().LoginUser(newmail, newpassword).Times(1).Return(compare, invalid, nil)
 			},
 			checkResponse: func(t *testing.T, responseRecorder *httptest.ResponseRecorder) {
 				assert.Equal(t, http.StatusOK, responseRecorder.Code)
-				// Add additional assertions based on the expected response for a successful login
 			},
 		},
 
@@ -69,7 +68,7 @@ func Test_LoginHandler(t *testing.T) {
 			Newmail:     "bibin@gmail.com",
 			Newpassword: "no password",
 			buildStub: func(useCaseMock *mock.MockUserUseCase, newmail, newpassword string) {
-				compare := entity.Compare{} // You might adjust this based on your expectations
+				compare := entity.Compare{}
 				invalid := entity.Invalid{
 					PasswordError: "Check password again",
 				}
@@ -99,7 +98,7 @@ func Test_LoginHandler(t *testing.T) {
 
 			server.POST("/login", UserHandler.LoginPost)
 			jsonData, err := json.Marshal(map[string]string{
-				"email":     test.Newmail,
+				"email":    test.Newmail,
 				"password": test.Newpassword,
 			})
 

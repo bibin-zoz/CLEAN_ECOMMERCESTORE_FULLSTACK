@@ -14,7 +14,6 @@ func Test_AddAddress(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	// Create mock implementations for the repositories
 	userRepo := mockRepository.NewMockUserRepository(ctrl)
 
 	userUseCase := NewUserUseCase(userRepo)
